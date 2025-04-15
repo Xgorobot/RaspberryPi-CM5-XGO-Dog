@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>LwuDynamic</title>
+    <script src="{{ url_for('static',filename='socket.io.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='console.css') }}" />
+</head>
+
+<body>
+    <div class="header">
+        <button class="reset-btn" onclick = "socket.emit('reset','REST')">Reset</button>
+        <div class="balance" onclick = "socket.emit('balance','1')">Balance</div>
+    </div>
+    <div class="main">
+        <img id="videoStream" src="{{ url_for('video_feed') }}" width="640" height="480">
+    </div>
+    <div class="footer">
+        <div class="action-div">
+            <div onclick = "socket.emit('action','1')">
+                <img src="{{url_for('static' , filename='./images/tool-action.png')}}" alt="">
+                <span>Action</span>
+            </div>
+        </div>
+        <ul class="control-buttons">
+            <li onclick = "socket.emit('PushUp','21')">PushUp</li>
+            <li onclick = "socket.emit('TakeAPee','11')">TakeAPee</li>
+            <li onclick = "socket.emit('WaveHand','19')">WaveHand</li>
+            <li onclick = "socket.emit('UpDown','6')">UpDown</li>
+            <li onclick = "socket.emit('LookFood','17')">LookFood</li>
+            <li onclick = "socket.emit('Dance','23')">Dance</li>
+        </ul>
+        <div class="height-control">
+            <span>Height</span>
+            <input type="range" min="0" max="100" value="50" id="height-slider">
+            <span class="value-display">50%</span>
+        </div>
+        <div class="joystick-container">
+            <div class="joystick-btn up" >↑</div>
+            <div class="joystick-btn left">←</div>
+            <div class="joystick-btn right">→</div>
+            <div class="joystick-btn down">↓</div>
+        </div>
+    </div>
+    <script>
+        var deviceIP = "{{device_ip}}";
+        var socket = io({
+          transports: ['websocket'],
+          upgrade: false,
+          pingTimeout: 5000,
+          pingInterval: 10000
+        });
+        
+        // 改进的移动控制状态管理
+        const moveControl = {
+            active: false,
+            currentDirection: null,
+            repeatInterval: 100,
+            timer: null,
+            lastEventType: null,
+            
+            start: function(direction, button, eventType) {
+                // 过滤重复事件类型
+                if (this.lastEventType === eventType) return;
+                this.lastEventType = eventType;
+
+                if (this.active && this.currentDirection === direction) return;
+                
+                this.stop(); 
+                this.active = true;
+                this.currentDirection = direction;
+                
+                if (button) button.style.background = "rgba(255, 255, 255, 0.5)";
+                
+                this.sendCommand();
+            
+                setTimeout(() => {
+                    if (this.active) {
+                        this.timer = setInterval(() => {
+                            this.sendCommand();
+                        }, this.repeatInterval);
+                    }
+                }, 100);
+            },
+            
+            stop: function(button) {
+                this.lastEventType = null;
+                if (!this.active) return;
+                
+                clearInterval(this.timer);
+                this.timer = null;
+                this.active = false;
+                
+                if (button) button.style.background = "rgba(255, 255, 255, 0.3)";
+                socket.emit('reset', 'REST');
+                this.currentDirection = null;
+            },
+            
+            sendCommand: function() {
+                if (!this.active || !this.currentDirection) return;
+                console.log(`Moving ${this.currentDirection}`);
+                switch (this.currentDirection) {
+                    case 'up': socket.emit('up', '12'); break;
+                    case 'down': socket.emit('down', '-12'); break;
+                    case 'left': socket.emit('left', '6'); break;
+                    case 'right': socket.emit('right', '-6'); break;
+                }
+            }
+        };
+
+        // 改进的按钮事件处理
+        function setupButton(button, direction) {
+            let isProcessing = false;
+            
+            const handleStart = (e) => {
+                if (isProcessing) return;
+                isProcessing = true;
+                e.preventDefault();
+                
+                const eventType = e.type === 'touchstart' ? 'touch' : 'mouse';
+                moveControl.start(direction, button, eventType);
+                
+                setTimeout(() => isProcessing = false, 50);
+            };
+
+            const handleEnd = (e) => {
+                e.preventDefault();
+                moveControl.stop(button);
+                isProcessing = false;
+            };
+
+            // 事件绑定
+            button.addEventListener('mousedown', handleStart, {passive: false});
+            button.addEventListener('touchstart', handleStart, {passive: false});
+            button.addEventListener('mouseup', handleEnd, {passive: false});
+            button.addEventListener('mouseleave', handleEnd, {passive: false});
+            button.addEventListener('touchend', handleEnd, {passive: false});
+            button.addEventListener('touchcancel', handleEnd, {passive: false});
+        }
+
+        // 初始化所有方向按钮
+        const directions = {
+            up: document.querySelector('.up'),
+            down: document.querySelector('.down'),
+            left: document.querySelector('.left'),
+            right: document.querySelector('.right')
+        };
+
+        Object.entries(directions).forEach(([direction, button]) => {
+            setupButton(button, direction);
+        });
+
+        // 连接状态处理
+        socket.on('connect', function () {
+            console.log('Connected to server');
+        });
+        
+        socket.on('disconnect', function () {
+            console.log('Disconnected from server');
+            moveControl.stop();
+        });
+        
+        socket.on('error', function (data) {
+            console.error('Socket error:', data);
+        });
+        
+        // 高度控制相关函数
+        const minActual = 30;
+        const maxActual = 75;
+        
+        function displayToActual(displayValue) {
+            return Math.round(minActual + (maxActual - minActual) * displayValue / 100);
+        }
+        
+        function actualToDisplay(actualValue) {
+            return Math.round((actualValue - minActual) * 100 / (maxActual - minActual));
+        }
+        
+        socket.on('reset_height', function(data) {
+            const displayValue = actualToDisplay(data.value);
+            heightSlider.value = displayValue;
+            valueDisplay.textContent = displayValue + '%';
+        });
+
+        // 高度控制
+        const heightSlider = document.getElementById('height-slider');
+        const valueDisplay = document.querySelector('.value-display');
+        
+        // 初始化滑块值
+        heightSlider.value = actualToDisplay(50); // 默认中间值
+        valueDisplay.textContent = heightSlider.value + '%';
+        
+        heightSlider.addEventListener('input', function() {
+            const displayValue = parseInt(this.value);
+            const actualValue = displayToActual(displayValue);
+            valueDisplay.textContent = displayValue + '%';
+            socket.emit('height', actualValue);
+        });
+
+        // 全局事件处理
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                moveControl.stop();
+            }
+        });
+
+        window.addEventListener('blur', () => {
+            moveControl.stop();
+        });
+
+        // 页面加载完成后调整高度控制位置
+        document.addEventListener('DOMContentLoaded', () => {
+            const heightControl = document.querySelector('.height-control');
+            heightControl.style.position = "absolute";
+
+            setTimeout(() => {
+                heightControl.style.right = "5%"; 
+            }, 500);
+        });
+    </script>
+</body>
+</html>
