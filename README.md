@@ -1,6 +1,4 @@
 # RaspberryPi-CM5|树莓派5驱动的四足机器人控制框架
-
-# RaspberryPi-CM5  
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yourname/RaspberryPi-CM5/build.yml?logo=github)](https://github.com/yourname/RaspberryPi-CM5/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/yourname/RaspberryPi-CM5?logo=codecov)](https://codecov.io/gh/yourname/RaspberryPi-CM5)  
 [![RPi5](https://img.shields.io/badge/Raspberry%20Pi-5-red?logo=raspberrypi)](https://www.raspberrypi.com/products/raspberry-pi-5/)
