@@ -1,5 +1,7 @@
 import platform
 
+#version=2.0
+ 
 play_command = None
 default_libpath = None
 
@@ -27,6 +29,7 @@ elif system == "Linux":
 	elif(machine == "armv6l"):
 		default_libpath = '../../lib/rpi/armv6/libnyumaya_premium.so.3.1.0'
 
+	#Pi3 says it's armv7 although its armv8
 	elif(machine == "armv7l"):
 		default_libpath = '../../lib/rpi/armv8/libnyumaya_premium.so.3.1.0'
 
@@ -42,3 +45,5 @@ elif system == "Windows":
 
 else:
 	print("Your OS is currently not supported")
+
+

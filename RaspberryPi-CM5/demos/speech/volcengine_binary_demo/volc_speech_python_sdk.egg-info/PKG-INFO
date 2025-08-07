@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: volc-speech-python-sdk
+Version: 0.1.0
+Requires-Python: >=3.9
+Requires-Dist: websockets>=14.0
+Dynamic: requires-python

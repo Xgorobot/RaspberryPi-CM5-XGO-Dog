@@ -10,8 +10,8 @@ from flask_socketio import SocketIO, send, emit
 from camera_dog import Dog_Camera
 from concurrent.futures import ThreadPoolExecutor
 
-os.environ['PATH'] = '/home/pi/RaspberryPi-CM4/xgovenv/bin:' + os.environ.get('PATH', '')
-os.chdir('/home/pi/RaspberryPi-CM4')  
+os.environ['PATH'] = '/home/pi/RaspberryPi-CM5/xgovenv/bin:' + os.environ.get('PATH', '')
+os.chdir('/home/pi/RaspberryPi-CM5')  
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -25,10 +25,10 @@ from demos.uiutils import (Button, splash_theme_color, btn_selected, btn_unselec
 display.ShowImage(splash)
 
 # Load Images
-app_image = Image.open("/home/pi/RaspberryPi-CM4/pics/app.png") 
-unapp_image = Image.open("/home/pi/RaspberryPi-CM4/pics/unapp.png")
-wifiy = Image.open("/home/pi/RaspberryPi-CM4/pics/wifi@2x.jpg")
-wifin = Image.open("/home/pi/RaspberryPi-CM4/pics/wifi-un@2x.jpg")
+app_image = Image.open("/home/pi/RaspberryPi-CM5/pics/app.png") 
+unapp_image = Image.open("/home/pi/RaspberryPi-CM5/pics/unapp.png")
+wifiy = Image.open("/home/pi/RaspberryPi-CM5/pics/wifi@2x.jpg")
+wifin = Image.open("/home/pi/RaspberryPi-CM5/pics/wifi-un@2x.jpg")
 font2 = ImageFont.truetype("/home/pi/model/msyh.ttc", 23)
 
 def get_ip(ifname):

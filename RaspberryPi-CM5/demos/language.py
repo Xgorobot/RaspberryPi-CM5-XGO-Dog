@@ -48,12 +48,10 @@ def update_ui():
 import os
 
 def restart_application():
-    print(111)
     with open(language_ini_path, "w") as f:
         f.write(content)
         f.flush()
 
-    print(222)
     text_width = draw.textlength(lal["LANGUAGE"]["SAVED"], font=font2)
     title_x = (320 - text_width) / 2
     display_cjk_string(draw, title_x, 200, lal["LANGUAGE"]["SAVED"], font_size=font2, color=color_white, background_color=color_bg)
@@ -61,7 +59,7 @@ def restart_application():
     time.sleep(2)
 
 
-    os.system("python /home/pi/RaspberryPi-CM4/kill.py")
+    os.system("python /home/pi/RaspberryPi-CM5/kill.py")
     os._exit(0)  
     
 while True:

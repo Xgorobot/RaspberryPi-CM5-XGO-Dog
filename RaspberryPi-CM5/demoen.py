@@ -24,19 +24,31 @@ MENU_ITEMS = [
         ("dog_show", "1movement", "dog_show", lal["DEMOEN"]["SHOW"]),
         ("network", "2vision", "network", lal["DEMOEN"]["NETWORK"]),
         ("xiaozhi", "3voice", "xiaozhi", lal["DEMOEN"]["XIAOZHI"]),
-        ("speech", "4voice", "speech", lal["DEMOEN"]["SPEECH"]),
-        ("ei", "4voice", "ei", lal["DEMOEN"]["GPTCMD"]),
-        ("face_mask", "5vision", "face_mask", lal["DEMOEN"]["MASK"]),
-        ("face_decetion", "6vision", "face_decetion", lal["DEMOEN"]["FACETRACK"]),
-        ("hands", "7vision", "hands", lal["DEMOEN"]["HANDS"]),
-        ("height", "8vision", "handh", lal["DEMOEN"]["HEIGHT"]),
-        ("pose", "9vision", "pose_dog", lal["DEMOEN"]["POSE"]),
-        ("color", "10vision", "color", lal["DEMOEN"]["COLOR"]),
-        ("qrcode", "11vision", "qrcode", lal["DEMOEN"]["QRCODE"]),
-        ("wifi_set", "12vision", "wifi_set", lal["DEMOEN"]["WIFISET"]),
-        ("language", "13vision", "language", lal["DEMOEN"]["LANGUAGE"]),
-        ("volume", "14vision", "volume", lal["DEMOEN"]["VOLUME"]),
-        ("device", "15vision", "device", lal["DEMOEN"]["DEVICE"]),
+        ("gpt_free", "4vision", "gpt_free", lal["DEMOEN"]["GPTFREE"]),
+        ("speech", "5voice", "speech", lal["DEMOEN"]["SPEECH"]),
+        ("ei", "6voice", "ei", lal["DEMOEN"]["GPTCMD"]),
+        ("aigym","7vision","aigym",lal["DEMOEN"]["AIGYM"]),
+        ("gamefruit","8vision","gamefruit",lal["DEMOEN"]["FRUITGAM"]),
+        ("emotion","9vision","emotion",lal["DEMOEN"]["EMOTION"]),
+        ("face_r","10vision","face_r",lal["DEMOEN"]["FACEREC"]),
+        ("follow_person","11vision","follow_person",lal["DEMOEN"]["FOLLOWPERSON"]),
+        ("agent", "12vision", "agent", lal["DEMOEN"]["AGENT"]),
+        ("ball_catch", "13vision", "ball_catch", lal["DEMOEN"]["CATCH"]),
+        ("follow_line", "14vision", "follow_line", lal["DEMOEN"]["FOLLOWLINE"]),
+        ("dog_Joystick", "15vision", "dog_Joystick", lal["DEMOEN"]["JOYSTICK"]),
+        ("teach_mode", "16vision", "teach_mode", lal["DEMOEN"]["TEACH"]),
+        ("teach_UDP", "17vision", "teach_UDP", lal["DEMOEN"]["TEACHUDP"]),        
+        ("group", "18vision", "group", lal["DEMOEN"]["GROUP"]),
+        ("face_mask", "19vision", "face_mask", lal["DEMOEN"]["MASK"]),
+        ("face_decetion", "20vision", "face_decetion", lal["DEMOEN"]["FACETRACK"]),
+        ("hands", "21vision", "hands", lal["DEMOEN"]["HANDS"]),
+        ("height", "22vision", "handh", lal["DEMOEN"]["HEIGHT"]),
+        ("color", "23vision", "color", lal["DEMOEN"]["COLOR"]),
+        ("qrcode", "24vision", "qrcode", lal["DEMOEN"]["QRCODE"]),
+        ("wifi_set", "25vision", "wifi_set", lal["DEMOEN"]["WIFISET"]),
+        ("language", "26vision", "language", lal["DEMOEN"]["LANGUAGE"]),
+        ("volume", "27vision", "volume", lal["DEMOEN"]["VOLUME"]),
+        ("device", "28vision", "device", lal["DEMOEN"]["DEVICE"])
     ]
 
 SELECT_BOX = [80, 68]
@@ -293,11 +305,36 @@ while True:
             elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "volume":
                 os.system("python3 ./demos/volume.py")
             elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "xiaozhi":
-                os.system("python3 ./demos/xiaozhi/xiaozhi.py")
-            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "pose_dog":
-                os.system("python3 ./demos/pose_dog.py")
+                os.system("python3 ./xiaozhi_test/main.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "gpt_free":
+                os.system("python3 ./demos/speech/gpt_free.py")
             elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "ei":
-                os.system("python /home/pi/RaspberryPi-CM4/demos/EI/ei.py")
+                os.system("python /home/pi/RaspberryPi-CM5/demos/speech/ei.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "face_r":
+                os.system("python3 ./face.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "emotion":
+                os.system("python3 ./face_classification-master/src/video_emotion_color_demo.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "gamefruit":
+                os.system("python3 ./fru.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "follow_person":
+                os.system("python3 ./follow_person.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "aigym":
+                os.system("python3 ./AI_gym/test.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "ball_catch":
+                os.system("python3 ./demos/ball.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "group":
+                os.system("python3 ./demos/group.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "teach_mode":
+                os.system("python3 ./demos/shijiao.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "teach_UDP":
+                os.system("python3 ./demos/shijiao_UDP.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "dog_Joystick":
+                os.system("python3 ./demos/dog_Joystick.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "agent":
+                os.system("python3 ./demos/speech/coze.py")
+            elif MENU_ITEMS[MENU_CURRENT_SELECT][2] == "follow_line":
+                os.system("python3 ./demos/follow_line.py")
+
             print("program done")
             draw_title_bar(MENU_CURRENT_SELECT)
         except BaseException as e:

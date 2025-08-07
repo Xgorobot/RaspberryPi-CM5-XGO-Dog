@@ -85,6 +85,17 @@
         "GPTREC":"GPTRec",
         "GPTCMD":"RobotGPT",
         "GPTFREE":"Q&A",
-        "XIAOZHI":"XIAOZHI"
+        "XIAOZHI":"XIAOZHI",
+        "EMOTION":"Emotion",
+        "AIGYM":"AIGym",
+        "FRUITGAM":"FruitGame",
+        "FACEREC":"FaceRec",
+         "CATCH":"Ball",
+        "JOYSTICK":"Handle",
+        "FOLLOWLINE":"Line",
+        "GROUP":"Group",
+        "AGENT":"Agent",
+        "TEACH":"Teach",
+        "TEACHUDP":"Teachlkg"
     }
 }

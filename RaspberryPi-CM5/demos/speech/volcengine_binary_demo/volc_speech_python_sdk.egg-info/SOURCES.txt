@@ -1,0 +1,9 @@
+pyproject.toml
+setup.py
+protocols/__init__.py
+protocols/protocols.py
+volc_speech_python_sdk.egg-info/PKG-INFO
+volc_speech_python_sdk.egg-info/SOURCES.txt
+volc_speech_python_sdk.egg-info/dependency_links.txt
+volc_speech_python_sdk.egg-info/requires.txt
+volc_speech_python_sdk.egg-info/top_level.txt

@@ -30,7 +30,7 @@ mic_purple = (24, 47, 223)
 _font_cache = {}
 
 #define logos
-pics_dir = "/home/pi/RaspberryPi-CM4/pics"
+pics_dir = "/home/pi/RaspberryPi-CM5/pics"
 lan_logo = Image.open(os.path.join(pics_dir, "L@2x.png"))
 arrow_logo_1 = Image.open(os.path.join(pics_dir, "C@2x.png"))
 vol_logo = Image.open(os.path.join(pics_dir, "s@2x.png"))
@@ -43,8 +43,8 @@ mic_logo = Image.open(os.path.join(pics_dir, "mic.png"))
 mic_wave = Image.open(os.path.join(pics_dir, "mic_wave.png"))
 offline_logo = Image.open(os.path.join(pics_dir, "offline.png"))
 draw_logo = Image.open(os.path.join(pics_dir, "gpt_draw.png"))
-fm_logo = Image.open("/home/pi/RaspberryPi-CM4/pics/F@2x.png")
-re_logo = Image.open("/home/pi/RaspberryPi-CM4/pics/redian@2x.png")
+fm_logo = Image.open("/home/pi/RaspberryPi-CM5/pics/F@2x.png")
+re_logo = Image.open("/home/pi/RaspberryPi-CM5/pics/redian@2x.png")
 
 def get_font(size):
     if size not in _font_cache:
@@ -116,6 +116,7 @@ class Button:
 def get_path(path):
     current_dir = os.getcwd()
     language_ini_path = os.path.join(current_dir, "language", "language.ini")
+    language_ini_path = "/home/pi/RaspberryPi-CM5/language/language.ini"
     if path == "current":
         return current_dir
     elif path == "language_ini_path":
@@ -143,8 +144,19 @@ def load_language():
     with open(language_pack, 'r') as f:
         language_json = f.read()
     cleaned_json = re.sub(r'[\x00-\x1f\x7f]', '', language_json)
+    print(cleaned_json)
     language_dict = json.loads(cleaned_json)
     return language_dict
+def language():
+    current_dir = os.getcwd()
+    print(current_dir)
+    language_ini_path = os.path.join(current_dir, "language", "language.ini")
+    print(language_ini_path)
+    with open(language_ini_path,'r') as f:
+        language=f.read()
+        result_la = language.strip()
+        print(result_la)
+    return result_la
 
 class DogTypeChecker:
     def __init__(self):

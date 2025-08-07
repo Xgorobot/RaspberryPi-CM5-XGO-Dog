@@ -26,4 +26,4 @@ def kill_processes():
 if __name__ == "__main__":
     kill_processes()
     time.sleep(1)
-    os.system(f"nohup {sys.executable} /home/pi/RaspberryPi-CM4/main.py > /dev/null 2>&1 &")
+    os.system(f"nohup {sys.executable} /home/pi/RaspberryPi-CM5/main.py > /dev/null 2>&1 &")

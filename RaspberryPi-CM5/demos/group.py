@@ -8,16 +8,28 @@ sys.path.append("..")
 
 button = Button()
 la = load_language()
+fm = dog.read_firmware()
+#if it's Mini or Lite
+if fm[0] == "M":
+    dog_type = "M"
+    firmware_info = "MINI"
+    version = "xgomini"
+else:
+    dog_type = "L"
+    firmware_info = "LITE"
+    version = "xgolite"
 
-dog_type_checker = DogTypeChecker()
-fm = dog_type_checker.check_type()
 
+fm = (dog_type, version, firmware_info)
+
+result = fm[0]
+dog_type = result
 dog.reset()
 
 boardcast=False
 exitmark=False
 
-pic_path = "/home/pi/RaspberryPi-CM4/demos/expression/"
+pic_path = "/home/pi/RaspberryPi-CM4-main/demos/expression/"
 _canvas_x, _canvas_y = 0, 0
 
 def display_cjk_string(splash,x, y, text, color=(255,255,255), font_size=1, scale=1, mono_space=False, auto_wrap=True, background_color=(0,0,0)):
@@ -79,7 +91,7 @@ while 1:
               while 1:
                   if playmark==False or boardcast==False or exitmark==True:
                       break
-                  if fm[0]=='L' or fm[0]=='M':
+                  if dog_type=='L' or dog_type=='M':
                     show("sad", 14)
                     show("naughty", 14)
                     show("boring", 14)
@@ -98,7 +110,7 @@ while 1:
                     show("Shakehead", 7)
                     show("Stun", 8)
                     show("wronged", 14)
-                  elif fm[0]=='R':
+                  elif dog_type=='R':
                     show("sad_r", 12)
                     show("naughty_r", 12)
                     show("angry_r", 12)

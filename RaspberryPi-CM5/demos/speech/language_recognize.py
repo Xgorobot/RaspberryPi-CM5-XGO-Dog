@@ -1,21 +1,13 @@
 #coding=utf-8
-import asyncio
-import base64
-import gzip
-import hmac
-import json
-import logging
-import os
-import uuid
-import wave
+import asyncio,base64,gzip,hmac,json,uuid,wave,websockets
 from enum import Enum
 from hashlib import sha256
 from io import BytesIO
-from typing import List
 from urllib.parse import urlparse
-import time
-import websockets
-from uiutils import la
+
+#version=2.0
+
+
 appid = "3984980014"
 token = "dME9mE6J4NWygiMFg6vhrqQ2S49TY2FX"
 cluster = "volcengine_input_common"
@@ -56,7 +48,7 @@ CUSTOM_TYPE = 0b1111
 NO_COMPRESSION = 0b0000
 GZIP = 0b0001
 CUSTOM_COMPRESSION = 0b1111
-print("la is "+la)
+
 
 def generate_header(
     version=PROTOCOL_VERSION,
@@ -67,7 +59,7 @@ def generate_header(
     reserved_data=0x00,
     extension_header=bytes()
 ):
-
+    
     header = bytearray()
     header_size = int(len(extension_header) / 4) + 1
     header.append((version << 4) | header_size)
@@ -95,7 +87,7 @@ def generate_last_audio_default_header():
     )
 
 def parse_response(res):
-  
+
     protocol_version = res[0] >> 4
     header_size = res[0] & 0x0f
     message_type = res[1] >> 4
@@ -143,11 +135,11 @@ def read_wav_info(data: bytes = None) -> (int, int, int, int, int):
     return nchannels, sampwidth, framerate, nframes, len(wave_bytes)
 
 class AudioType(Enum):
-    LOCAL = 1  # Ê¹ÓÃ±¾µØÒôÆµÎÄ¼þ
+    LOCAL = 1  # ä½¿ç”¨æœ¬åœ°éŸ³é¢‘æ–‡ä»¶
 
 class AsrWsClient:
     def __init__(self, audio_path, cluster, **kwargs):
- 
+
         self.audio_path = audio_path
         self.cluster = cluster
         self.success_code = 1000  # success code, default is 1000
@@ -163,6 +155,7 @@ class AsrWsClient:
         self.result_type = kwargs.get("result_type", "full")
         self.format = kwargs.get("format", "wav")
         self.rate = kwargs.get("sample_rate", 16000)
+        self.language = kwargs.get("language", "zh-CN")
         self.bits = kwargs.get("bits", 16)
         self.channel = kwargs.get("channel", 1)
         self.codec = kwargs.get("codec", "raw")
@@ -170,7 +163,6 @@ class AsrWsClient:
         self.secret = kwargs.get("secret", "access_secret")
         self.auth_method = kwargs.get("auth_method", "token")
         self.mp3_seg_size = int(kwargs.get("mp3_seg_size", 10000))
-        self.language = kwargs.get("language", "zh-CN")
 
     def construct_request(self, reqid):
         req = {
@@ -204,7 +196,7 @@ class AsrWsClient:
 
     @staticmethod
     def slice_data(data: bytes, chunk_size: int) -> (list, bool):
-     
+        
         data_len = len(data)
         offset = 0
         while offset + chunk_size < data_len:
@@ -239,34 +231,34 @@ class AsrWsClient:
 
     async def segment_data_processor(self, wav_data: bytes, segment_size: int):
         reqid = str(uuid.uuid4())
-        # ¹¹½¨ full client request£¬²¢ÐòÁÐ»¯Ñ¹Ëõ
+        # æž„å»º full client requestï¼Œå¹¶åºåˆ—åŒ–åŽ‹ç¼©
         request_params = self.construct_request(reqid)
         payload_bytes = str.encode(json.dumps(request_params))
         payload_bytes = gzip.compress(payload_bytes)
         full_client_request = bytearray(generate_full_default_header())
-        full_client_request.extend((len(payload_bytes)).to_bytes(4, 'big'))  # payload size(4 bytes)
-        full_client_request.extend(payload_bytes)  # payload
+        full_client_request.extend((len(payload_bytes)).to_bytes(4, 'big')) 
+        full_client_request.extend(payload_bytes) 
         header = None
         if self.auth_method == "token":
             header = self.token_auth()
         elif self.auth_method == "signature":
             header = self.signature_auth(full_client_request)
-        async with websockets.connect(self.ws_url, additional_headers=header, max_size=1000000000) as ws:
-            # ·¢ËÍ full client request
+        async with websockets.connect(self.ws_url,additional_headers=header, max_size=1000000000) as ws:
+
             await ws.send(full_client_request)
             res = await ws.recv()
             result = parse_response(res)
             if 'payload_msg' in result and result['payload_msg']['code'] != self.success_code:
                 return result
             for seq, (chunk, last) in enumerate(AsrWsClient.slice_data(wav_data, segment_size), 1):
-                # if no compression, comment this line
+
                 payload_bytes = gzip.compress(chunk)
                 audio_only_request = bytearray(generate_audio_default_header())
                 if last:
                     audio_only_request = bytearray(generate_last_audio_default_header())
                 audio_only_request.extend((len(payload_bytes)).to_bytes(4, 'big'))  # payload size(4 bytes)
                 audio_only_request.extend(payload_bytes)  # payload
-                # ·¢ËÍ audio-only client request
+
                 await ws.send(audio_only_request)
                 res = await ws.recv()
                 result = parse_response(res)
@@ -307,6 +299,7 @@ def execute_one(audio_item, cluster, **kwargs):
     return {"id": audio_id, "path": audio_path, "result": result}
 
 def test_one():
+
     result = execute_one(
         {
             'id': 1,
@@ -322,3 +315,6 @@ def test_one():
     except:
         return 0
 
+
+if __name__ == '__main__':
+    test_one()
